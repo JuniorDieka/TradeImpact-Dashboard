@@ -1,0 +1,206 @@
+<div class="trade-performance-container">
+  <app-header></app-header>
+
+  <div class="content-wrapper">
+    <app-sidebar></app-sidebar>
+
+    <main class="main-content">
+      <div class="page-header">
+        <h1><mat-icon>trending_up</mat-icon> Trade Performance Analytics</h1>
+        <p>Monitor national trade competitiveness and market trends</p>
+      </div>
+
+      <!-- Country Selector -->
+      <mat-card class="selector-card">
+        <mat-card-content>
+          <mat-form-field appearance="outline">
+            <mat-label>Select Country</mat-label>
+            <mat-select [(ngModel)]="selectedCountry" (selectionChange)="onCountryChange()">
+              <mat-option *ngFor="let country of countries" [value]="country">
+                {{ country }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Loading Spinner -->
+      <div *ngIf="loading" class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Loading trade data...</p>
+      </div>
+
+      <!-- Trade Data Dashboard -->
+      <div *ngIf="!loading && tradeData" class="dashboard-grid">
+        
+        <!-- Key Metrics Cards -->
+        <div class="metrics-row">
+          <mat-card class="metric-card">
+            <mat-card-content>
+              <div class="metric-icon exports">
+                <mat-icon>upload</mat-icon>
+              </div>
+              <div class="metric-details">
+                <h3>Total Exports</h3>
+                <p class="metric-value">${{ tradeData.totalExports | numberFormat:2 }}</p>
+                <span class="metric-label">USD</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="metric-card">
+            <mat-card-content>
+              <div class="metric-icon imports">
+                <mat-icon>download</mat-icon>
+              </div>
+              <div class="metric-details">
+                <h3>Total Imports</h3>
+                <p class="metric-value">${{ tradeData.totalImports | numberFormat:2 }}</p>
+                <span class="metric-label">USD</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="metric-card">
+            <mat-card-content>
+              <div class="metric-icon balance" [ngClass]="tradeBalanceClass">
+                <mat-icon>{{ tradeBalance >= 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+              </div>
+              <div class="metric-details">
+                <h3>Trade Balance</h3>
+                <p class="metric-value" [ngClass]="tradeBalanceClass">
+                  ${{ tradeBalance | numberFormat:2 }}
+                </p>
+                <span class="metric-label">{{ tradeBalance >= 0 ? 'Surplus' : 'Deficit' }}</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="metric-card">
+            <mat-card-content>
+              <div class="metric-icon competitiveness">
+                <mat-icon>emoji_events</mat-icon>
+              </div>
+              <div class="metric-details">
+                <h3>Competitiveness Index</h3>
+                <p class="metric-value">{{ tradeData.tradeCompetitivenessIndex | number:'1.2-2' }}</p>
+                <span class="metric-label">Out of 10</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Trade Trends Chart -->
+        <mat-card class="chart-card full-width">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>show_chart</mat-icon>
+              Export & Import Trends
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="chart-container">
+              <canvas baseChart
+                      [data]="tradeTrendsData"
+                      [options]="tradeTrendsOptions"
+                      [type]="'line'">
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Sector Breakdown and Trading Partners -->
+        <div class="charts-row">
+          <mat-card class="chart-card">
+            <mat-card-header>
+              <mat-card-title>
+                <mat-icon>bar_chart</mat-icon>
+                Top Export Sectors
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="chart-container" *ngIf="tradeData.sectorBreakdown && tradeData.sectorBreakdown.length > 0; else noSectorData">
+                <canvas baseChart
+                        [data]="sectorData"
+                        [options]="sectorOptions"
+                        [type]="'bar'">
+                </canvas>
+              </div>
+              <ng-template #noSectorData>
+                <div class="no-data">
+                  <mat-icon>info</mat-icon>
+                  <p>No sector data available</p>
+                </div>
+              </ng-template>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="chart-card">
+            <mat-card-header>
+              <mat-card-title>
+                <mat-icon>public</mat-icon>
+                Top Trading Partners
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="chart-container" *ngIf="tradeData.topPartners && tradeData.topPartners.length > 0; else noPartnerData">
+                <canvas baseChart
+                        [data]="partnersData"
+                        [options]="partnersOptions"
+                        [type]="'doughnut'">
+                </canvas>
+              </div>
+              <ng-template #noPartnerData>
+                <div class="no-data">
+                  <mat-icon>info</mat-icon>
+                  <p>No trading partner data available</p>
+                </div>
+              </ng-template>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Additional Metrics -->
+        <mat-card class="info-card" *ngIf="tradeData.keyMetrics">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>insights</mat-icon>
+              Key Performance Indicators
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="kpi-grid">
+              <div class="kpi-item" *ngIf="tradeData.keyMetrics.exportGrowthRate !== undefined">
+                <span class="kpi-label">Export Growth Rate</span>
+                <span class="kpi-value positive">+{{ tradeData.keyMetrics.exportGrowthRate }}%</span>
+              </div>
+              <div class="kpi-item" *ngIf="tradeData.keyMetrics.importGrowthRate !== undefined">
+                <span class="kpi-label">Import Growth Rate</span>
+                <span class="kpi-value">+{{ tradeData.keyMetrics.importGrowthRate }}%</span>
+              </div>
+              <div class="kpi-item" *ngIf="tradeData.keyMetrics.tradeDiversificationIndex !== undefined">
+                <span class="kpi-label">Trade Diversification</span>
+                <span class="kpi-value">{{ tradeData.keyMetrics.tradeDiversificationIndex | number:'1.2-2' }}</span>
+              </div>
+              <div class="kpi-item" *ngIf="tradeData.keyMetrics.valueAddedExportsPercentage !== undefined">
+                <span class="kpi-label">Value-Added Exports</span>
+                <span class="kpi-value">{{ tradeData.keyMetrics.valueAddedExportsPercentage }}%</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+
+      <!-- No Data Message -->
+      <mat-card *ngIf="!loading && !tradeData" class="no-data-card">
+        <mat-card-content>
+          <mat-icon>error_outline</mat-icon>
+          <h3>No Trade Data Available</h3>
+          <p>Unable to load trade data for the selected country.</p>
+        </mat-card-content>
+      </mat-card>
+
+    </main>
+  </div>
+</div>

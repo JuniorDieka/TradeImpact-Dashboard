@@ -1,0 +1,81 @@
+<div class="dashboard-layout">
+  <app-header></app-header>
+  
+  <div class="dashboard-content">
+    <app-sidebar></app-sidebar>
+    
+    <main class="main-content">
+      <div class="container">
+        <h1>Welcome to TradeImpact Dashboard</h1>
+        
+        <mat-card class="welcome-card">
+          <mat-card-header>
+            <mat-card-title>Hello, {{ currentUser?.firstName }}!</mat-card-title>
+            <mat-card-subtitle>Role: {{ currentUser?.role }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>Welcome to the TradeImpact Dashboard - your gateway to sustainable trade intelligence.</p>
+            <p>Use the navigation menu to explore:</p>
+            <ul>
+              <li><strong>Standards:</strong> Compare 150+ voluntary sustainability standards</li>
+              <li><strong>Trade Performance:</strong> Monitor national trade competitiveness</li>
+              <li><strong>Assessments:</strong> Conduct MSME sustainability self-assessments</li>
+              <li><strong>Value Chains:</strong> Track green value chains with risk analysis</li>
+              <li><strong>Stakeholder Board:</strong> Collaborate on multi-stakeholder projects</li>
+            </ul>
+          </mat-card-content>
+        </mat-card>
+
+        <div class="stats-grid">
+          <mat-card>
+            <mat-card-content>
+              <div class="stat-item">
+                <mat-icon color="primary">verified</mat-icon>
+                <div class="stat-details">
+                  <h3>150+</h3>
+                  <p>Sustainability Standards</p>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card>
+            <mat-card-content>
+              <div class="stat-item">
+                <mat-icon color="accent">public</mat-icon>
+                <div class="stat-details">
+                  <h3>54</h3>
+                  <p>African Countries</p>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card>
+            <mat-card-content>
+              <div class="stat-item">
+                <mat-icon color="warn">trending_up</mat-icon>
+                <div class="stat-details">
+                  <h3>Real-time</h3>
+                  <p>Trade Analytics</p>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card>
+            <mat-card-content>
+              <div class="stat-item">
+                <mat-icon>groups</mat-icon>
+                <div class="stat-details">
+                  <h3>Multi-stakeholder</h3>
+                  <p>Collaboration</p>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

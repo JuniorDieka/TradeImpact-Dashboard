@@ -1,0 +1,30 @@
+<mat-toolbar color="primary" class="app-header">
+  <button mat-icon-button (click)="navigateTo('/dashboard')">
+    <mat-icon>dashboard</mat-icon>
+  </button>
+  
+  <span class="app-title">TradeImpact Dashboard</span>
+  
+  <span class="spacer"></span>
+  
+  <button mat-button [matMenuTriggerFor]="menu" *ngIf="currentUser">
+    <mat-icon>account_circle</mat-icon>
+    <span class="user-name">{{ currentUser.firstName }} {{ currentUser.lastName }}</span>
+  </button>
+  
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item disabled>
+      <mat-icon>person</mat-icon>
+      <span>{{ currentUser?.role }}</span>
+    </button>
+    <button mat-menu-item disabled>
+      <mat-icon>business</mat-icon>
+      <span>{{ currentUser?.organization }}</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>
