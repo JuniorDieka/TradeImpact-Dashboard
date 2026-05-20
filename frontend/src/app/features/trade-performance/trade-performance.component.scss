@@ -51,8 +51,15 @@
     padding: 16px;
   }
 
+  .selector-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
   mat-form-field {
-    width: 300px;
+    flex: 1;
+    min-width: 250px;
   }
 }
 

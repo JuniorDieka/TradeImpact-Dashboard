@@ -10,17 +10,34 @@
         <p>Monitor national trade competitiveness and market trends</p>
       </div>
 
-      <!-- Country Selector -->
+      <!-- Country & Currency Selector -->
       <mat-card class="selector-card">
         <mat-card-content>
-          <mat-form-field appearance="outline">
-            <mat-label>Select Country</mat-label>
-            <mat-select [(ngModel)]="selectedCountry" (selectionChange)="onCountryChange()">
-              <mat-option *ngFor="let country of countries" [value]="country">
-                {{ country }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <div class="selector-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Select Country</mat-label>
+              <mat-select [(ngModel)]="selectedCountry" (selectionChange)="onCountryChange()">
+                <mat-option *ngFor="let country of countries" [value]="country">
+                  {{ country }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Currency Display</mat-label>
+              <mat-select [(ngModel)]="displayMode" (selectionChange)="onDisplayModeChange()">
+                <mat-option [value]="CurrencyDisplayMode.LOCAL">
+                  Local Currency ({{ currencyInfo }})
+                </mat-option>
+                <mat-option [value]="CurrencyDisplayMode.USD">
+                  US Dollar (USD)
+                </mat-option>
+                <mat-option [value]="CurrencyDisplayMode.PPP">
+                  PPP Adjusted (Purchasing Power)
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
         </mat-card-content>
       </mat-card>
 
@@ -42,8 +59,8 @@
               </div>
               <div class="metric-details">
                 <h3>Total Exports</h3>
-                <p class="metric-value">${{ tradeData.totalExports | numberFormat:2 }}</p>
-                <span class="metric-label">USD</span>
+                <p class="metric-value">{{ formatCurrencyValue(tradeData.totalExports) }}</p>
+                <span class="metric-label">{{ displayMode === CurrencyDisplayMode.PPP ? 'PPP Adjusted' : currencyInfo }}</span>
               </div>
             </mat-card-content>
           </mat-card>
@@ -55,8 +72,8 @@
               </div>
               <div class="metric-details">
                 <h3>Total Imports</h3>
-                <p class="metric-value">${{ tradeData.totalImports | numberFormat:2 }}</p>
-                <span class="metric-label">USD</span>
+                <p class="metric-value">{{ formatCurrencyValue(tradeData.totalImports) }}</p>
+                <span class="metric-label">{{ displayMode === CurrencyDisplayMode.PPP ? 'PPP Adjusted' : currencyInfo }}</span>
               </div>
             </mat-card-content>
           </mat-card>
@@ -69,7 +86,7 @@
               <div class="metric-details">
                 <h3>Trade Balance</h3>
                 <p class="metric-value" [ngClass]="tradeBalanceClass">
-                  ${{ tradeBalance | numberFormat:2 }}
+                  {{ formatCurrencyValue(tradeBalance) }}
                 </p>
                 <span class="metric-label">{{ tradeBalance >= 0 ? 'Surplus' : 'Deficit' }}</span>
               </div>

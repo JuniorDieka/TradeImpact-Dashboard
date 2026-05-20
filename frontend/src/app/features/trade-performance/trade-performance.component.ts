@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TradeDataService } from '../../core/services/trade-data.service';
+import { CurrencyService } from '../../core/services/currency.service';
 import { TradeData } from '../../shared/models/trade-data.model';
+import { CurrencyDisplayMode } from '../../shared/models/currency.model';
 import { ChartConfiguration } from 'chart.js';
 
 @Component({
@@ -13,6 +15,10 @@ export class TradePerformanceComponent implements OnInit {
   selectedCountry = 'Rwanda';
   countries = ['Rwanda', 'Kenya', 'Ethiopia'];
   tradeData: TradeData | null = null;
+  
+  displayMode: CurrencyDisplayMode = CurrencyDisplayMode.LOCAL;
+  CurrencyDisplayMode = CurrencyDisplayMode;
+  currencyInfo = '';
 
   // Line chart for trade trends
   public tradeTrendsData: ChartConfiguration<'line'>['data'] = {
@@ -53,8 +59,9 @@ export class TradePerformanceComponent implements OnInit {
         callbacks: {
           label: (context) => {
             const label = context.dataset.label || '';
-            const value = this.formatNumber(context.parsed.y ?? 0);
-            return `${label}: $${value}`;
+            const valueInUSD = context.parsed.y ?? 0;
+            const formattedValue = this.currencyService.formatCurrency(valueInUSD, this.selectedCountry, this.displayMode);
+            return `${label}: ${formattedValue}`;
           }
         }
       }
@@ -64,7 +71,8 @@ export class TradePerformanceComponent implements OnInit {
         beginAtZero: true,
         ticks: {
           callback: (value) => {
-            return '$' + this.formatNumber(Number(value));
+            const converted = this.currencyService.convertFromUSD(Number(value), this.selectedCountry, this.displayMode);
+            return this.getCurrencyPrefix() + this.formatNumber(converted);
           }
         }
       }
@@ -99,8 +107,9 @@ export class TradePerformanceComponent implements OnInit {
       tooltip: {
         callbacks: {
           label: (context) => {
-            const value = this.formatNumber(context.parsed.y ?? 0);
-            return `Export Value: $${value}`;
+            const valueInUSD = context.parsed.y ?? 0;
+            const formattedValue = this.currencyService.formatCurrency(valueInUSD, this.selectedCountry, this.displayMode);
+            return `Export Value: ${formattedValue}`;
           }
         }
       }
@@ -110,7 +119,8 @@ export class TradePerformanceComponent implements OnInit {
         beginAtZero: true,
         ticks: {
           callback: (value) => {
-            return '$' + this.formatNumber(Number(value));
+            const converted = this.currencyService.convertFromUSD(Number(value), this.selectedCountry, this.displayMode);
+            return this.getCurrencyPrefix() + this.formatNumber(converted);
           }
         }
       }
@@ -151,14 +161,29 @@ export class TradePerformanceComponent implements OnInit {
     }
   };
 
-  constructor(private tradeDataService: TradeDataService) {}
+  constructor(
+    private tradeDataService: TradeDataService,
+    private currencyService: CurrencyService
+  ) {}
 
   ngOnInit(): void {
+    this.updateCurrencyInfo();
     this.loadTradeData();
   }
 
   onCountryChange(): void {
+    this.updateCurrencyInfo();
     this.loadTradeData();
+  }
+
+  onDisplayModeChange(): void {
+    // Refresh chart labels when display mode changes
+    this.loadTrendChart();
+    this.loadSectorChart();
+  }
+
+  updateCurrencyInfo(): void {
+    this.currencyInfo = this.currencyService.getCurrencyInfo(this.selectedCountry);
   }
 
   loadTradeData(): void {
@@ -283,5 +308,17 @@ export class TradePerformanceComponent implements OnInit {
     } else {
       return value.toFixed(decimals);
     }
+  }
+
+  formatCurrencyValue(valueInUSD: number): string {
+    return this.currencyService.formatCurrency(valueInUSD, this.selectedCountry, this.displayMode);
+  }
+
+  getCurrencyPrefix(): string {
+    if (this.displayMode === CurrencyDisplayMode.USD) {
+      return '$';
+    }
+    const currency = this.currencyService.getCurrencyByCountry(this.selectedCountry);
+    return currency?.symbol || '$';
   }
 }
