@@ -6,8 +6,100 @@
     
     <main class="main-content">
       <div class="container">
-        <h1>Sustainability Standards Browser</h1>
+        <div class="header-section">
+          <h1>Sustainability Standards Browser</h1>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="toggleComparisonMode()"
+            [class.active]="comparisonMode">
+            <mat-icon>{{ comparisonMode ? 'close' : 'compare' }}</mat-icon>
+            {{ comparisonMode ? 'Exit Comparison Mode' : 'Compare Standards' }}
+          </button>
+        </div>
+
+        <!-- Comparison Action Bar -->
+        <div class="comparison-bar" *ngIf="comparisonMode">
+          <div class="comparison-info">
+            <mat-icon>info</mat-icon>
+            <span>Select 2-5 standards to compare ({{ selectedStandards.size }} selected)</span>
+          </div>
+          <button 
+            mat-raised-button 
+            color="accent" 
+            (click)="compareSelected()"
+            [disabled]="selectedStandards.size < 2">
+            Compare {{ selectedStandards.size }} Standards
+          </button>
+        </div>
         
+        <!-- Search and Filters -->
+        <mat-card class="filters-card">
+          <mat-card-content>
+            <div class="filters-section">
+              <!-- Search Bar -->
+              <mat-form-field class="search-field" appearance="outline">
+                <mat-label>Search standards</mat-label>
+                <input 
+                  matInput 
+                  [(ngModel)]="searchQuery"
+                  (ngModelChange)="onSearchChange($event)"
+                  placeholder="Search by name or description...">
+                <mat-icon matPrefix>search</mat-icon>
+              </mat-form-field>
+
+              <!-- Sector Filter -->
+              <mat-form-field appearance="outline">
+                <mat-label>Sector</mat-label>
+                <mat-select 
+                  [(ngModel)]="filters.sector"
+                  (selectionChange)="onFilterChange()">
+                  <mat-option [value]="undefined">All Sectors</mat-option>
+                  <mat-option *ngFor="let sector of sectors" [value]="sector">
+                    {{ sector }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <!-- Country Filter -->
+              <mat-form-field appearance="outline">
+                <mat-label>Country</mat-label>
+                <mat-select 
+                  [(ngModel)]="filters.country"
+                  (selectionChange)="onFilterChange()">
+                  <mat-option [value]="undefined">All Countries</mat-option>
+                  <mat-option *ngFor="let country of countries" [value]="country">
+                    {{ country }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <!-- Hotspot Category Filter -->
+              <mat-form-field appearance="outline">
+                <mat-label>Hotspot Category</mat-label>
+                <mat-select 
+                  [(ngModel)]="filters.hotspotCategory"
+                  (selectionChange)="onFilterChange()">
+                  <mat-option [value]="undefined">All Categories</mat-option>
+                  <mat-option *ngFor="let category of hotspotCategories" [value]="category">
+                    {{ category | titlecase }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <!-- Clear Filters Button -->
+              <button 
+                mat-stroked-button 
+                (click)="clearFilters()"
+                class="clear-filters-btn">
+                <mat-icon>clear</mat-icon>
+                Clear Filters
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Standards Grid -->
         <mat-card>
           <mat-card-content>
             <div *ngIf="loading" class="loading-container">
@@ -15,13 +107,33 @@
             </div>
 
             <div *ngIf="!loading && standards.length > 0" class="standards-grid">
-              <mat-card *ngFor="let standard of standards" class="standard-card">
+              <mat-card 
+                *ngFor="let standard of standards" 
+                class="standard-card"
+                [class.selected]="isStandardSelected(standard._id!)">
+                
+                <!-- Comparison Checkbox -->
+                <mat-checkbox 
+                  *ngIf="comparisonMode"
+                  class="comparison-checkbox"
+                  [checked]="isStandardSelected(standard._id!)"
+                  (change)="toggleStandardSelection(standard._id!)"
+                  [disabled]="!isStandardSelected(standard._id!) && selectedStandards.size >= 5">
+                </mat-checkbox>
+
                 <mat-card-header>
                   <mat-card-title>{{ standard.name }}</mat-card-title>
                   <mat-card-subtitle>{{ standard.acronym }}</mat-card-subtitle>
                 </mat-card-header>
+                
                 <mat-card-content>
-                  <p>{{ standard.description }}</p>
+                  <p class="description">{{ standard.description }}</p>
+                  
+                  <div class="info-row">
+                    <mat-icon>business</mat-icon>
+                    <span>{{ standard.sector }}</span>
+                  </div>
+                  
                   <div class="chips-container">
                     <mat-chip-set>
                       <mat-chip *ngFor="let category of standard.hotspotCategories">
@@ -30,11 +142,20 @@
                     </mat-chip-set>
                   </div>
                 </mat-card-content>
+                
+                <mat-card-actions *ngIf="!comparisonMode">
+                  <button mat-button color="primary" (click)="viewDetails(standard._id!)">
+                    <mat-icon>visibility</mat-icon>
+                    View Details
+                  </button>
+                </mat-card-actions>
               </mat-card>
             </div>
 
-            <div *ngIf="!loading && standards.length === 0">
-              <p>No standards found. Please seed the database.</p>
+            <div *ngIf="!loading && standards.length === 0" class="no-results">
+              <mat-icon>search_off</mat-icon>
+              <p>No standards found matching your criteria.</p>
+              <button mat-button color="primary" (click)="clearFilters()">Clear Filters</button>
             </div>
           </mat-card-content>
         </mat-card>

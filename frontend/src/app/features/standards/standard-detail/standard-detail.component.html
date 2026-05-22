@@ -1,0 +1,225 @@
+<div class="dashboard-layout">
+  <app-header></app-header>
+  
+  <div class="dashboard-content">
+    <app-sidebar></app-sidebar>
+    
+    <main class="main-content">
+      <div class="container">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-container">
+          <mat-spinner></mat-spinner>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="error && !loading" class="error-container">
+          <mat-icon>error_outline</mat-icon>
+          <h2>Standard Not Found</h2>
+          <p>The requested sustainability standard could not be found.</p>
+          <button mat-raised-button color="primary" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            Back to Standards
+          </button>
+        </div>
+
+        <!-- Standard Details -->
+        <div *ngIf="standard && !loading" class="detail-container">
+          <!-- Header Section -->
+          <div class="detail-header">
+            <button mat-icon-button (click)="goBack()" class="back-button">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <div class="header-content">
+              <h1>{{ standard.name }}</h1>
+              <p class="acronym">{{ standard.acronym }}</p>
+            </div>
+          </div>
+
+          <!-- Overview Card -->
+          <mat-card class="overview-card">
+            <mat-card-header>
+              <mat-card-title>Overview</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <p class="description">{{ standard.description }}</p>
+              
+              <div class="info-grid">
+                <div class="info-item">
+                  <mat-icon>business</mat-icon>
+                  <div>
+                    <span class="label">Sector</span>
+                    <span class="value">{{ standard.sector }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <mat-icon>{{ standard.isVoluntary ? 'check_circle' : 'cancel' }}</mat-icon>
+                  <div>
+                    <span class="label">Type</span>
+                    <span class="value">{{ standard.isVoluntary ? 'Voluntary' : 'Mandatory' }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <mat-icon>verified</mat-icon>
+                  <div>
+                    <span class="label">Third-Party Verification</span>
+                    <span class="value">{{ standard.requiresThirdPartyVerification ? 'Required' : 'Not Required' }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item" *ngIf="standard.certificationBody">
+                  <mat-icon>account_balance</mat-icon>
+                  <div>
+                    <span class="label">Certification Body</span>
+                    <span class="value">{{ standard.certificationBody }}</span>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <mat-icon>trending_up</mat-icon>
+                  <div>
+                    <span class="label">Adoption Rate</span>
+                    <span class="value">{{ standard.adoptionRate }}%</span>
+                  </div>
+                </div>
+
+                <div class="info-item" *ngIf="standard.website">
+                  <mat-icon>language</mat-icon>
+                  <div>
+                    <span class="label">Website</span>
+                    <a [href]="standard.website" target="_blank" class="value link">
+                      Visit Website
+                      <mat-icon class="external-link">open_in_new</mat-icon>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Hotspot Categories -->
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Hotspot Categories</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-chip-set>
+                <mat-chip *ngFor="let category of standard.hotspotCategories" color="primary">
+                  {{ category | titlecase }}
+                </mat-chip>
+              </mat-chip-set>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Applicable Countries -->
+          <mat-card *ngIf="standard.applicableCountries?.length">
+            <mat-card-header>
+              <mat-card-title>Applicable Countries</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="countries-list">
+                <mat-chip-set>
+                  <mat-chip *ngFor="let country of standard.applicableCountries">
+                    {{ country }}
+                  </mat-chip>
+                </mat-chip-set>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Member States -->
+          <mat-card *ngIf="standard.memberStates?.length">
+            <mat-card-header>
+              <mat-card-title>EAC Member States</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="countries-list">
+                <mat-chip-set>
+                  <mat-chip *ngFor="let state of standard.memberStates">
+                    {{ state }}
+                  </mat-chip>
+                </mat-chip-set>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Criteria Sections -->
+          <mat-card *ngIf="getCriteriaCount() > 0">
+            <mat-card-header>
+              <mat-card-title>Sustainability Criteria ({{ getCriteriaCount() }} total)</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-accordion>
+                <!-- Environmental Criteria -->
+                <mat-expansion-panel *ngIf="standard.criteria?.environmental?.length">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <mat-icon>eco</mat-icon>
+                      Environmental ({{ standard.criteria?.environmental?.length }})
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <ul class="criteria-list">
+                    <li *ngFor="let criterion of standard.criteria?.environmental">{{ criterion }}</li>
+                  </ul>
+                </mat-expansion-panel>
+
+                <!-- Social Criteria -->
+                <mat-expansion-panel *ngIf="standard.criteria?.social?.length">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <mat-icon>groups</mat-icon>
+                      Social ({{ standard.criteria?.social?.length }})
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <ul class="criteria-list">
+                    <li *ngFor="let criterion of standard.criteria?.social">{{ criterion }}</li>
+                  </ul>
+                </mat-expansion-panel>
+
+                <!-- Economic Criteria -->
+                <mat-expansion-panel *ngIf="standard.criteria?.economic?.length">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <mat-icon>attach_money</mat-icon>
+                      Economic ({{ standard.criteria?.economic?.length }})
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <ul class="criteria-list">
+                    <li *ngFor="let criterion of standard.criteria?.economic">{{ criterion }}</li>
+                  </ul>
+                </mat-expansion-panel>
+
+                <!-- Quality Criteria -->
+                <mat-expansion-panel *ngIf="standard.criteria?.quality?.length">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <mat-icon>verified</mat-icon>
+                      Quality ({{ standard.criteria?.quality?.length }})
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <ul class="criteria-list">
+                    <li *ngFor="let criterion of standard.criteria?.quality">{{ criterion }}</li>
+                  </ul>
+                </mat-expansion-panel>
+
+                <!-- Ethics Criteria -->
+                <mat-expansion-panel *ngIf="standard.criteria?.ethics?.length">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <mat-icon>gavel</mat-icon>
+                      Ethics ({{ standard.criteria?.ethics?.length }})
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <ul class="criteria-list">
+                    <li *ngFor="let criterion of standard.criteria?.ethics">{{ criterion }}</li>
+                  </ul>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

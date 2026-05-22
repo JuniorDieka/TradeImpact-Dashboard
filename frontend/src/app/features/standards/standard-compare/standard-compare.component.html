@@ -1,0 +1,176 @@
+<div class="dashboard-layout">
+  <app-header></app-header>
+  
+  <div class="dashboard-content">
+    <app-sidebar></app-sidebar>
+    
+    <main class="main-content">
+      <div class="container">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-container">
+          <mat-spinner></mat-spinner>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="error && !loading" class="error-container">
+          <mat-icon>error_outline</mat-icon>
+          <h2>Comparison Not Available</h2>
+          <p>Unable to load standards for comparison. Please select 2-5 standards.</p>
+          <button mat-raised-button color="primary" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            Back to Standards
+          </button>
+        </div>
+
+        <!-- Comparison View -->
+        <div *ngIf="standards.length >= 2 && !loading" class="comparison-container">
+          <!-- Header -->
+          <div class="comparison-header">
+            <button mat-icon-button (click)="goBack()" class="back-button">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <div class="header-content">
+              <h1>Compare Standards</h1>
+              <p>Comparing {{ standards.length }} sustainability standards</p>
+            </div>
+          </div>
+
+          <!-- Standards Overview -->
+          <div class="standards-overview">
+            <mat-card *ngFor="let standard of standards" class="overview-card">
+              <mat-card-header>
+                <mat-card-title>{{ standard.name }}</mat-card-title>
+                <mat-card-subtitle>{{ standard.acronym }}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <p class="description">{{ standard.description }}</p>
+                <mat-chip-set>
+                  <mat-chip *ngFor="let category of standard.hotspotCategories">
+                    {{ category }}
+                  </mat-chip>
+                </mat-chip-set>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <!-- Comparison Table -->
+          <mat-card class="comparison-table-card">
+            <mat-card-header>
+              <mat-card-title>Key Attributes Comparison</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <table class="comparison-table">
+                <thead>
+                  <tr>
+                    <th class="attribute-column">Attribute</th>
+                    <th *ngFor="let standard of standards">{{ standard.acronym }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let attr of comparisonAttributes">
+                    <td class="attribute-label">
+                      <mat-icon>{{ attr.icon }}</mat-icon>
+                      <span>{{ attr.label }}</span>
+                    </td>
+                    <td *ngFor="let standard of standards" class="value-cell">
+                      {{ formatValue(getValue(standard, attr.key), attr) }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Hotspot Categories Comparison -->
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Hotspot Categories Coverage</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <table class="comparison-table">
+                <thead>
+                  <tr>
+                    <th class="attribute-column">Category</th>
+                    <th *ngFor="let standard of standards">{{ standard.acronym }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let category of getAllCriteriaCategories()">
+                    <td class="attribute-label">
+                      <span>{{ category | titlecase }}</span>
+                    </td>
+                    <td *ngFor="let standard of standards" class="value-cell">
+                      <mat-icon *ngIf="getCriteriaForCategory(standard, category).length > 0" color="primary">
+                        check_circle
+                      </mat-icon>
+                      <mat-icon *ngIf="getCriteriaForCategory(standard, category).length === 0" class="not-covered">
+                        cancel
+                      </mat-icon>
+                      <span class="criteria-count">
+                        ({{ getCriteriaForCategory(standard, category).length }} criteria)
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Applicable Countries -->
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Geographical Coverage</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="countries-comparison">
+                <div *ngFor="let standard of standards" class="country-section">
+                  <h3>{{ standard.acronym }}</h3>
+                  <mat-chip-set>
+                    <mat-chip *ngFor="let country of standard.applicableCountries">
+                      {{ country }}
+                    </mat-chip>
+                  </mat-chip-set>
+                  <p *ngIf="!standard.applicableCountries?.length" class="no-data">
+                    No specific countries listed
+                  </p>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Detailed Criteria Comparison -->
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Detailed Criteria Comparison</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-accordion>
+                <mat-expansion-panel *ngFor="let category of getAllCriteriaCategories()">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      {{ category | titlecase }} Criteria
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  
+                  <div class="criteria-comparison">
+                    <div *ngFor="let standard of standards" class="criteria-section">
+                      <h4>{{ standard.acronym }}</h4>
+                      <ul class="criteria-list">
+                        <li *ngFor="let criterion of getCriteriaForCategory(standard, category)">
+                          {{ criterion }}
+                        </li>
+                      </ul>
+                      <p *ngIf="getCriteriaForCategory(standard, category).length === 0" class="no-criteria">
+                        No {{ category }} criteria defined
+                      </p>
+                    </div>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
