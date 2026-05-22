@@ -6,7 +6,7 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-7.x-47A248?logo=mongodb)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)
 
-**Last Updated:** May 20, 2026
+**Last Updated:** May 22, 2026
 
 A **multi-stakeholder sustainability trade intelligence platform** for MSMEs and policymakers, inspired by ITC's T4SD (Trade for Sustainable Development) and GIVC (Green & Inclusive Value Chains) programmes.
 
@@ -169,12 +169,17 @@ git clone https://github.com/JuniorDieka/TradeImpact-Dashboard.git
 cd TradeImpact-Dashboard
 ```
 
-#### 2. Backend Setup
+#### 2. Complete Setup (One-Time)
 
 ```bash
-cd backend
-npm install
+npm run setup
 ```
+
+This single command:
+- Installs all dependencies (root, backend, frontend)
+- Seeds the database with sample data
+
+#### 3. Configure Environment Variables
 
 Create a `.env` file in the `backend` directory:
 
@@ -196,47 +201,72 @@ JWT_EXPIRATION=24h
 CORS_ORIGIN=http://localhost:4200
 ```
 
-#### 3. Seed the Database
+### Running the Application
+
+#### Quick Start (Recommended)
+
+**From the root directory:**
 
 ```bash
-npm run seed
+npm start
 ```
 
-This creates sample data:
-- 3 test users (admin, policy analyst, MSME user)
-- 4 sustainability standards (Fairtrade, Rainforest Alliance, USDA Organic, UTZ)
-- Trade data for Rwanda, Kenya, and Ethiopia
+This automatically:
+- ✅ Starts the backend server (`http://localhost:3000`)
+- ✅ Starts the frontend dev server (`http://localhost:4200`)
+- ✅ Shows all logs in one terminal with color-coded prefixes
+
+**Note:** Database is already seeded from the setup step. No need to seed again!
 
 **Test Credentials:**
 - Admin: `sarah.ochieng@tradeimpact.org` / `Admin@2024`
 - Policy Analyst: `jp.mukasa@gov.rw` / `Policy@2024`
 - MSME User: `amina.hassan@kiganicoffee.rw` / `Coffee@2024`
 
-#### 4. Start the Backend
+#### Individual Commands
+
+If you need more control:
 
 ```bash
-npm run start:dev
+# Re-seed database (only if you need to reset data)
+npm run seed
+
+# Start backend and frontend (same as npm start)
+npm run dev
+
+# Start backend only
+npm run dev:backend
+
+# Start frontend only
+npm run dev:frontend
 ```
 
-Backend runs at: `http://localhost:3000`  
-API Documentation: `http://localhost:3000/api/docs`
-
-#### 5. Frontend Setup
-
-Open a new terminal:
+#### Other Useful Commands
 
 ```bash
-cd frontend
-npm install
+# Build for production
+npm run build
+
+# Run tests
+npm run test
+
+# Lint code
+npm run lint
 ```
 
-#### 6. Start the Frontend
+### Access Points
 
-```bash
-npm start
-```
+- **Frontend**: `http://localhost:4200`
+- **Backend API**: `http://localhost:3000/api`
+- **API Documentation**: `http://localhost:3000/api/docs`
 
-Frontend runs at: `http://localhost:4200`
+### Log Output
+
+All logs appear in one terminal with color-coded prefixes:
+- 🔵 **BACKEND** - Backend server logs, API requests, database operations
+- 🟣 **FRONTEND** - Frontend build logs, compilation warnings, errors
+
+Press `Ctrl+C` to stop all processes.
 
 ---
 
@@ -246,40 +276,58 @@ Frontend runs at: `http://localhost:4200`
 TradeImpact-Dashboard/
 ├── backend/                    # NestJS backend application
 │   ├── src/
-│   │   ├── auth/              # Authentication module (JWT, guards)
-│   │   ├── users/             # User management
+│   │   ├── auth/              # Authentication module (JWT, guards, strategies)
+│   │   ├── users/             # User management with roles
 │   │   ├── standards/         # Sustainability standards CRUD
-│   │   ├── country-trade/     # Trade performance data
+│   │   ├── country-trade/     # Trade performance data & analytics
 │   │   ├── assessments/       # MSME self-assessments
 │   │   ├── value-chains/      # Value chain tracking
 │   │   ├── stakeholders/      # Collaboration board
 │   │   ├── common/            # Shared utilities, filters, pipes
-│   │   ├── app.module.ts
-│   │   └── main.ts            # Entry point with Swagger
+│   │   ├── app.controller.ts  # Health check endpoints
+│   │   ├── app.module.ts      # Root module
+│   │   └── main.ts            # Entry point with Swagger & CORS
 │   ├── scripts/
 │   │   └── seed.ts            # Database seeding script
 │   ├── package.json
 │   ├── tsconfig.json
+│   ├── .env                   # MongoDB & JWT config (gitignored)
 │   └── .env.example
 │
-├── frontend/                   # Angular frontend application
+├── frontend/                   # Angular 17 frontend application
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── core/          # Singleton services, guards, interceptors
-│   │   │   ├── shared/        # Shared modules, components, models
-│   │   │   ├── features/      # Lazy-loaded feature modules
+│   │   │   ├── core/
+│   │   │   │   ├── services/  # API, Auth, Currency, TradeData, Notification
+│   │   │   │   ├── guards/    # Auth & Role guards
+│   │   │   │   └── interceptors/ # JWT & Error interceptors
+│   │   │   ├── shared/
+│   │   │   │   ├── models/    # TypeScript interfaces (User, TradeData, Currency, etc.)
+│   │   │   │   └── pipes/     # NumberFormat pipe
+│   │   │   ├── features/
+│   │   │   │   ├── auth/              # Login & Register
+│   │   │   │   ├── dashboard/         # Main dashboard
+│   │   │   │   ├── trade-performance/ # Charts with currency localization
+│   │   │   │   ├── standards/         # VSS browser
+│   │   │   │   ├── assessments/       # Self-assessment forms
+│   │   │   │   ├── value-chains/      # Value chain visualizer
+│   │   │   │   └── stakeholder-board/ # Collaboration tools
 │   │   │   ├── layout/        # Header, sidebar components
 │   │   │   ├── app.module.ts
 │   │   │   └── app-routing.module.ts
-│   │   ├── environments/      # Environment configs
-│   │   ├── assets/            # Static assets
-│   │   └── styles.scss        # Global styles
+│   │   ├── environments/      # Development & production configs
+│   │   ├── assets/
+│   │   └── styles.scss        # Global styles with Material theme
 │   ├── angular.json
 │   ├── package.json
 │   └── tsconfig.json
 │
-├── README.md
-└── STRUCTURE.md               # Detailed folder structure
+├── package.json               # Root workspace with unified dev scripts
+├── .gitignore                 # Excludes .env.atlas, node_modules, build outputs
+├── .nvmrc                     # Node version 18.0.0
+├── README.md                  # This file
+├── DEVELOPMENT.md             # Comprehensive development guide
+└── STRUCTURE.md               # Detailed folder structure documentation
 ```
 
 ---

@@ -5,17 +5,21 @@
 TradeImpact-Dashboard/
 ├── backend/              # NestJS API server
 ├── frontend/             # Angular web application
-├── .gitignore
-├── README.md
-└── STRUCTURE.md          # This file
+├── package.json          # Root workspace with unified dev scripts
+├── .gitignore            # Excludes .env.atlas, node_modules, build outputs
+├── .nvmrc                # Node version 18.0.0
+├── README.md             # Main documentation
+├── DEVELOPMENT.md        # Comprehensive development guide
+└── STRUCTURE.md          # This file - detailed project structure
 ```
 
 ## Backend Structure (NestJS + MongoDB)
 ```
 backend/
 ├── src/
-│   ├── main.ts                          # Application entry point with Swagger setup
+│   ├── main.ts                          # Application entry point with Swagger setup, CORS, global prefix
 │   ├── app.module.ts                    # Root module with all feature imports
+│   ├── app.controller.ts                # Health check endpoints (/, /health)
 │   ├── auth/                            # Authentication module
 │   │   ├── auth.module.ts
 │   │   ├── auth.controller.ts           # Login, register, profile endpoints
@@ -122,6 +126,8 @@ frontend/
 │   │   │   ├── services/
 │   │   │   │   ├── auth.service.ts      # Authentication service
 │   │   │   │   ├── api.service.ts       # Base HTTP service
+│   │   │   │   ├── trade-data.service.ts # Trade data API calls
+│   │   │   │   ├── currency.service.ts  # Currency conversion & PPP calculations
 │   │   │   │   └── notification.service.ts # User notifications
 │   │   │   ├── interceptors/
 │   │   │   │   ├── jwt.interceptor.ts   # Attach JWT to requests
@@ -140,10 +146,12 @@ frontend/
 │   │   │   │   ├── user.model.ts
 │   │   │   │   ├── standard.model.ts
 │   │   │   │   ├── trade-data.model.ts
+│   │   │   │   ├── currency.model.ts    # Currency config, exchange rates, PPP
 │   │   │   │   ├── assessment.model.ts
 │   │   │   │   ├── value-chain.model.ts
 │   │   │   │   └── stakeholder.model.ts
 │   │   │   ├── pipes/
+│   │   │   │   ├── number-format.pipe.ts # K/M/B/T number formatting
 │   │   │   │   └── truncate.pipe.ts
 │   │   │   └── shared.module.ts
 │   │   ├── features/
@@ -181,19 +189,12 @@ frontend/
 │   │   │   │   │   └── standards.service.ts
 │   │   │   │   ├── standards-routing.module.ts
 │   │   │   │   └── standards.module.ts
-│   │   │   ├── trade-performance/       # Trade metrics feature
-│   │   │   │   ├── country-overview/
-│   │   │   │   │   ├── country-overview.component.ts
-│   │   │   │   │   ├── country-overview.component.html
-│   │   │   │   │   └── country-overview.component.scss
-│   │   │   │   ├── trade-charts/
-│   │   │   │   │   ├── trade-charts.component.ts
-│   │   │   │   │   ├── trade-charts.component.html
-│   │   │   │   │   └── trade-charts.component.scss
-│   │   │   │   ├── services/
-│   │   │   │   │   └── trade.service.ts
+│   │   │   ├── trade-performance/       # Trade metrics with currency localization
+│   │   │   │   ├── trade-performance.component.ts   # Main component with charts
+│   │   │   │   ├── trade-performance.component.html # Country selector, currency modes, charts
+│   │   │   │   ├── trade-performance.component.scss # Styling
 │   │   │   │   ├── trade-performance-routing.module.ts
-│   │   │   │   └── trade-performance.module.ts
+│   │   │   │   └── trade-performance.module.ts      # Chart.js integration
 │   │   │   ├── assessments/             # MSME assessment feature
 │   │   │   │   ├── assessment-form/
 │   │   │   │   │   ├── assessment-form.component.ts

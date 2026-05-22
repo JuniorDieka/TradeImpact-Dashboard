@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { StandardsModule } from './standards/standards.module';
@@ -32,5 +33,6 @@ import { StakeholdersModule } from './stakeholders/stakeholders.module';
     ValueChainsModule,
     StakeholdersModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
