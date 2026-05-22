@@ -26,7 +26,7 @@ export class StandardCompareComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private apiService: ApiService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadStandardsForComparison();
@@ -34,23 +34,30 @@ export class StandardCompareComponent implements OnInit {
 
   private loadStandardsForComparison(): void {
     const ids = this.route.snapshot.queryParamMap.get('ids');
-    
+
     if (!ids) {
       this.error = true;
       this.loading = false;
       return;
     }
 
+    console.log('Loading standards for comparison with IDs:', ids);
+
     this.apiService.get<any>(`standards/compare`, { ids }).subscribe({
       next: (response) => {
-        this.standards = response.data || [];
+        console.log('Comparison response:', response);
+        // Handle both {data: standards} and direct array response
+        this.standards = response.data || response || [];
+        console.log('Standards loaded for comparison:', this.standards);
         if (this.standards.length < 2) {
+          console.error('Not enough standards loaded:', this.standards.length);
           this.error = true;
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading standards for comparison:', error);
+        console.error('Error details:', error.error);
         this.error = true;
         this.loading = false;
       }
@@ -69,11 +76,11 @@ export class StandardCompareComponent implements OnInit {
     if (value === null || value === undefined) {
       return 'N/A';
     }
-    
+
     if (attribute.formatter) {
       return attribute.formatter(value);
     }
-    
+
     return String(value);
   }
 
