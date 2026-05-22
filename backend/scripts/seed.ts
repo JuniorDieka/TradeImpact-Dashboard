@@ -3,8 +3,11 @@ import { AppModule } from '../src/app.module';
 import { UsersService } from '../src/users/users.service';
 import { StandardsService } from '../src/standards/standards.service';
 import { CountryTradeService } from '../src/country-trade/country-trade.service';
+import { StakeholdersService } from '../src/stakeholders/stakeholders.service';
 import { HotspotCategory } from '../src/standards/schemas/standard.schema';
 import { UserRole } from '../src/users/schemas/user.schema';
+import { ProjectStatus } from '../src/stakeholders/schemas/project.schema';
+import { TaskStatus, TaskPriority } from '../src/stakeholders/schemas/task.schema';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -12,46 +15,66 @@ async function bootstrap() {
   const usersService = app.get(UsersService);
   const standardsService = app.get(StandardsService);
   const countryTradeService = app.get(CountryTradeService);
+  const stakeholdersService = app.get(StakeholdersService);
 
   console.log('🌱 Starting database seeding...\n');
 
   try {
-    console.log('👥 Creating users...');
-    const adminUser = await usersService.create({
-      firstName: 'Sarah',
-      lastName: 'Ochieng',
-      email: 'sarah.ochieng@tradeimpact.org',
-      password: 'Admin@2024',
-      role: UserRole.ADMIN,
-      organization: 'TradeImpact Dashboard',
-      memberState: 'Kenya',
-      sector: 'Trade Policy',
-    });
-    console.log(`   ✓ Admin user created: ${adminUser.email}`);
+    console.log('👥 Creating/Finding users...');
+    let adminUser;
+    let policyAnalyst;
 
-    const policyAnalyst = await usersService.create({
-      firstName: 'Jean-Paul',
-      lastName: 'Mukasa',
-      email: 'jp.mukasa@gov.rw',
-      password: 'Policy@2024',
-      role: UserRole.POLICY_ANALYST,
-      organization: 'Rwanda Ministry of Trade',
-      memberState: 'Rwanda',
-      sector: 'Trade Analysis',
-    });
-    console.log(`   ✓ Policy analyst created: ${policyAnalyst.email}`);
+    try {
+      adminUser = await usersService.create({
+        firstName: 'Sarah',
+        lastName: 'Ochieng',
+        email: 'sarah.ochieng@tradeimpact.org',
+        password: 'Admin@2024',
+        role: UserRole.ADMIN,
+        organization: 'TradeImpact Dashboard',
+        memberState: 'Kenya',
+        sector: 'Trade Policy',
+      });
+      console.log(`   ✓ Admin user created: ${adminUser.email}`);
+    } catch (error) {
+      adminUser = await usersService.findByEmail('sarah.ochieng@tradeimpact.org');
+      console.log(`   ✓ Admin user found: ${adminUser.email}`);
+    }
 
-    const msmeUser = await usersService.create({
-      firstName: 'Amina',
-      lastName: 'Hassan',
-      email: 'amina.hassan@kiganicoffee.rw',
-      password: 'Coffee@2024',
-      role: UserRole.MSME_USER,
-      organization: 'Kigali Coffee Cooperative',
-      memberState: 'Rwanda',
-      sector: 'Coffee',
-    });
-    console.log(`   ✓ MSME user created: ${msmeUser.email}\n`);
+    try {
+      policyAnalyst = await usersService.create({
+        firstName: 'Jean-Paul',
+        lastName: 'Mukasa',
+        email: 'jp.mukasa@gov.rw',
+        password: 'Policy@2024',
+        role: UserRole.POLICY_ANALYST,
+        organization: 'Rwanda Ministry of Trade',
+        memberState: 'Rwanda',
+        sector: 'Trade Analysis',
+      });
+      console.log(`   ✓ Policy analyst created: ${policyAnalyst.email}`);
+    } catch (error) {
+      policyAnalyst = await usersService.findByEmail('jp.mukasa@gov.rw');
+      console.log(`   ✓ Policy analyst found: ${policyAnalyst.email}`);
+    }
+
+    let msmeUser;
+    try {
+      msmeUser = await usersService.create({
+        firstName: 'Amina',
+        lastName: 'Hassan',
+        email: 'amina.hassan@kiganicoffee.rw',
+        password: 'Coffee@2024',
+        role: UserRole.MSME_USER,
+        organization: 'Kigali Coffee Cooperative',
+        memberState: 'Rwanda',
+        sector: 'Coffee',
+      });
+      console.log(`   ✓ MSME user created: ${msmeUser.email}\n`);
+    } catch (error) {
+      msmeUser = await usersService.findByEmail('amina.hassan@kiganicoffee.rw');
+      console.log(`   ✓ MSME user found: ${msmeUser.email}\n`);
+    }
 
     console.log('📋 Creating sustainability standards...');
     const fairtrade = await standardsService.create({
@@ -240,6 +263,146 @@ async function bootstrap() {
       },
     });
     console.log(`   ✓ Trade data created: ${ethiopiaTrade2024Q1.memberState} Q${ethiopiaTrade2024Q1.quarter} ${ethiopiaTrade2024Q1.year}\n`);
+
+    // Seed stakeholder projects and tasks
+    console.log('🤝 Creating stakeholder projects and tasks...');
+    const rwandaCoffeeProject = await stakeholdersService.createProject({
+      name: 'Rwanda Coffee Value Chain Enhancement',
+      description: 'Multi-stakeholder initiative to improve coffee quality standards, market access, and sustainability practices for Rwandan coffee cooperatives.',
+      memberState: 'Rwanda',
+      sector: 'Coffee',
+      status: ProjectStatus.ACTIVE,
+      stakeholderTypes: ['Ministry of Trade', 'Coffee Cooperatives', 'BSOs', 'Private Sector'],
+      objectives: [
+        'Increase coffee exports by 25%',
+        'Improve coffee quality certifications',
+        'Enhance farmer incomes through better market linkages',
+        'Implement sustainable farming practices'
+      ],
+      sustainabilityGoals: ['Fair Trade', 'Environmental Protection', 'Economic Growth'],
+      startDate: new Date('2024-01-01'),
+      endDate: new Date('2024-12-31'),
+      budget: {
+        total: 500000,
+        currency: 'USD',
+        allocated: 400000,
+        spent: 150000
+      },
+      createdBy: (adminUser as any)._id
+    });
+    console.log(`   ✓ Project created: ${rwandaCoffeeProject.name}`);
+
+    // Create tasks for Rwanda Coffee project
+    await stakeholdersService.createTask({
+      projectId: (rwandaCoffeeProject as any)._id,
+      title: 'Conduct baseline assessment of coffee cooperatives',
+      description: 'Survey 50 coffee cooperatives to understand current production volumes, quality standards, and certification status.',
+      status: TaskStatus.COMPLETED,
+      priority: TaskPriority.HIGH,
+      assignedTo: (policyAnalyst as any)._id,
+      dueDate: new Date('2024-02-28'),
+      tags: ['research', 'baseline'],
+      createdBy: (adminUser as any)._id
+    });
+
+    await stakeholdersService.createTask({
+      projectId: (rwandaCoffeeProject as any)._id,
+      title: 'Organize stakeholder workshop on quality standards',
+      description: 'Facilitate workshop with cooperatives, exporters, and certification bodies to align on quality improvement targets.',
+      status: TaskStatus.IN_PROGRESS,
+      priority: TaskPriority.HIGH,
+      assignedTo: (adminUser as any)._id,
+      dueDate: new Date('2024-06-15'),
+      tags: ['workshop', 'stakeholder-engagement'],
+      createdBy: (adminUser as any)._id
+    });
+
+    await stakeholdersService.createTask({
+      projectId: (rwandaCoffeeProject as any)._id,
+      title: 'Develop training curriculum on sustainable practices',
+      description: 'Create comprehensive training materials covering organic farming, water conservation, and Fair Trade principles.',
+      status: TaskStatus.UNDER_REVIEW,
+      priority: TaskPriority.MEDIUM,
+      dueDate: new Date('2024-07-01'),
+      tags: ['training', 'sustainability'],
+      createdBy: (adminUser as any)._id
+    });
+
+    await stakeholdersService.createTask({
+      projectId: (rwandaCoffeeProject as any)._id,
+      title: 'Establish buyer connections with EU importers',
+      description: 'Identify and connect cooperatives with 5 EU coffee importers seeking sustainably-sourced beans.',
+      status: TaskStatus.TODO,
+      priority: TaskPriority.HIGH,
+      assignedTo: (policyAnalyst as any)._id,
+      dueDate: new Date('2024-08-30'),
+      tags: ['market-access', 'trade-facilitation'],
+      createdBy: (adminUser as any)._id
+    });
+
+    await stakeholdersService.createTask({
+      projectId: (rwandaCoffeeProject as any)._id,
+      title: 'Review regulatory barriers to export',
+      description: 'Analyze current export procedures and identify bottlenecks affecting coffee shipment times.',
+      status: TaskStatus.BLOCKED,
+      priority: TaskPriority.URGENT,
+      dueDate: new Date('2024-05-30'),
+      tags: ['policy', 'regulatory'],
+      createdBy: (policyAnalyst as any)._id
+    });
+
+    console.log(`   ✓ Tasks created for ${rwandaCoffeeProject.name}`);
+
+    // Create Kenya Textile project
+    const kenyaTextileProject = await stakeholdersService.createProject({
+      name: 'Kenya Textile Industry Competitiveness Initiative',
+      description: 'Supporting Kenyan textile manufacturers to meet international standards and access regional markets through AGOA and AfCFTA.',
+      memberState: 'Kenya',
+      sector: 'Textiles',
+      status: ProjectStatus.ACTIVE,
+      stakeholderTypes: ['Ministry of Industry', 'Textile Manufacturers', 'Trade Associations'],
+      objectives: [
+        'Increase textile exports to US market under AGOA',
+        'Achieve compliance with international labor standards',
+        'Develop eco-friendly textile production methods'
+      ],
+      sustainabilityGoals: ['Decent Work', 'Clean Production', 'Economic Development'],
+      startDate: new Date('2024-03-01'),
+      endDate: new Date('2025-02-28'),
+      budget: {
+        total: 750000,
+        currency: 'USD',
+        allocated: 600000,
+        spent: 200000
+      },
+      createdBy: (adminUser as any)._id
+    });
+    console.log(`   ✓ Project created: ${kenyaTextileProject.name}`);
+
+    await stakeholdersService.createTask({
+      projectId: (kenyaTextileProject as any)._id,
+      title: 'Conduct AGOA eligibility audit for textile firms',
+      description: 'Review compliance of 20 textile manufacturers with AGOA requirements and identify gaps.',
+      status: TaskStatus.IN_PROGRESS,
+      priority: TaskPriority.HIGH,
+      assignedTo: (policyAnalyst as any)._id,
+      dueDate: new Date('2024-06-20'),
+      tags: ['compliance', 'AGOA', 'audit'],
+      createdBy: (adminUser as any)._id
+    });
+
+    await stakeholdersService.createTask({
+      projectId: (kenyaTextileProject as any)._id,
+      title: 'Organize trade mission to US retail buyers',
+      description: 'Facilitate connections between Kenyan textile manufacturers and major US retail chains.',
+      status: TaskStatus.TODO,
+      priority: TaskPriority.MEDIUM,
+      dueDate: new Date('2024-09-15'),
+      tags: ['trade-mission', 'market-access'],
+      createdBy: (adminUser as any)._id
+    });
+
+    console.log(`   ✓ Tasks created for ${kenyaTextileProject.name}\n`);
 
     console.log('✅ Database seeding completed successfully!\n');
     console.log('📌 Test credentials:');

@@ -1,17 +1,166 @@
 <div class="dashboard-layout">
   <app-header></app-header>
-  
+
   <div class="dashboard-content">
     <app-sidebar></app-sidebar>
-    
+
     <main class="main-content">
-      <div class="container">
-        <h1>Stakeholder Collaboration Board</h1>
-        <mat-card>
-          <mat-card-content>
-            <p>Project management tools coming soon...</p>
-          </mat-card-content>
-        </mat-card>
+      <div class="board-container">
+        <!-- Header -->
+        <div class="board-header">
+          <div class="header-content">
+            <h1>
+              <mat-icon>people</mat-icon>
+              Stakeholder Collaboration Board
+            </h1>
+            <p class="subtitle">Multi-stakeholder project tracking for trade and sustainability initiatives</p>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-container">
+          <mat-spinner></mat-spinner>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && projects.length === 0" class="empty-state">
+          <mat-icon>folder_open</mat-icon>
+          <h2>No Projects Yet</h2>
+          <p>Create your first project to start collaborating with stakeholders.</p>
+          <button mat-raised-button color="primary">
+            <mat-icon>add</mat-icon>
+            Create Project
+          </button>
+        </div>
+
+        <!-- Main Board -->
+        <div *ngIf="!loading && selectedProject" class="board-content">
+          <!-- Project Selector & Info -->
+          <mat-card class="project-header-card">
+            <div class="project-selector">
+              <mat-form-field appearance="outline">
+                <mat-label>Select Project</mat-label>
+                <mat-select [(value)]="selectedProject" (selectionChange)="selectProject($event.value)">
+                  <mat-option *ngFor="let project of projects" [value]="project">
+                    {{ project.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="project-info" *ngIf="selectedProject">
+              <div class="info-item">
+                <mat-icon>flag</mat-icon>
+                <div>
+                  <span class="label">Member State</span>
+                  <span class="value">{{ selectedProject.memberState }}</span>
+                </div>
+              </div>
+              <div class="info-item">
+                <mat-icon>business</mat-icon>
+                <div>
+                  <span class="label">Sector</span>
+                  <span class="value">{{ selectedProject.sector }}</span>
+                </div>
+              </div>
+              <div class="info-item">
+                <mat-icon>trending_up</mat-icon>
+                <div>
+                  <span class="label">Progress</span>
+                  <span class="value">{{ getProjectProgress() }}%</span>
+                </div>
+              </div>
+              <div class="info-item">
+                <mat-icon>task</mat-icon>
+                <div>
+                  <span class="label">Tasks</span>
+                  <span class="value">{{ tasks.length }}</span>
+                </div>
+              </div>
+            </div>
+          </mat-card>
+
+          <!-- Kanban Board -->
+          <div class="kanban-board">
+            <div *ngFor="let column of columns" class="kanban-column">
+              <div class="column-header" [style.border-color]="column.color">
+                <div class="column-title">
+                  <mat-icon [style.color]="column.color">{{ column.icon }}</mat-icon>
+                  <span>{{ column.title }}</span>
+                  <mat-chip class="count-chip">{{ getTasksByStatus(column.status).length }}</mat-chip>
+                </div>
+              </div>
+
+              <div class="column-content">
+                <div *ngIf="getTasksByStatus(column.status).length === 0" class="empty-column">
+                  <mat-icon>inventory_2</mat-icon>
+                  <span>No tasks</span>
+                </div>
+
+                <mat-card *ngFor="let task of getTasksByStatus(column.status)" class="task-card">
+                  <div class="task-header">
+                    <h3>{{ task.title }}</h3>
+                    <button mat-icon-button [matMenuTriggerFor]="taskMenu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #taskMenu="matMenu">
+                      <button mat-menu-item>
+                        <mat-icon>edit</mat-icon>
+                        <span>Edit</span>
+                      </button>
+                      <button mat-menu-item>
+                        <mat-icon>comment</mat-icon>
+                        <span>Add Comment</span>
+                      </button>
+                      <button mat-menu-item>
+                        <mat-icon>delete</mat-icon>
+                        <span>Delete</span>
+                      </button>
+                    </mat-menu>
+                  </div>
+
+                  <p *ngIf="task.description" class="task-description">{{ task.description }}</p>
+
+                  <div class="task-meta">
+                    <mat-chip class="priority-chip" [style.background-color]="getPriorityColor(task.priority)">
+                      {{ task.priority }}
+                    </mat-chip>
+
+                    <div class="task-assignee" *ngIf="task.assignedToName">
+                      <mat-icon>person</mat-icon>
+                      <span>{{ task.assignedToName }}</span>
+                    </div>
+
+                    <div class="task-due-date" *ngIf="task.dueDate" [class.overdue]="isOverdue(task)">
+                      <mat-icon>event</mat-icon>
+                      <span>{{ formatDate(task.dueDate) }}</span>
+                    </div>
+
+                    <div class="task-comments" *ngIf="task.comments.length > 0">
+                      <mat-icon>comment</mat-icon>
+                      <span>{{ task.comments.length }}</span>
+                    </div>
+                  </div>
+
+                  <div class="task-tags" *ngIf="task.tags.length > 0">
+                    <mat-chip *ngFor="let tag of task.tags">{{ tag }}</mat-chip>
+                  </div>
+
+                  <div class="task-actions">
+                    <mat-form-field appearance="outline" class="status-select">
+                      <mat-label>Move to</mat-label>
+                      <mat-select [value]="task.status" (selectionChange)="updateTaskStatus(task, $event.value)">
+                        <mat-option *ngFor="let col of columns" [value]="col.status">
+                          {{ col.title }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </mat-card>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
