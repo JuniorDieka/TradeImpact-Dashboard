@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { StakeholderService } from '../../core/services/stakeholder.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Project } from '../../shared/models/project.model';
@@ -30,8 +31,9 @@ export class StakeholderBoardComponent implements OnInit {
   constructor(
     private stakeholderService: StakeholderService,
     private authService: AuthService,
-    private dialog: MatDialog
-  ) { }
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {
@@ -119,5 +121,90 @@ export class StakeholderBoardComponent implements OnInit {
     if (this.tasks.length === 0) return 0;
     const completed = this.tasks.filter(t => t.status === TaskStatus.COMPLETED).length;
     return Math.round((completed / this.tasks.length) * 100);
+  }
+
+  editTask(task: Task): void {
+    // TODO: Open edit dialog
+    console.log('Edit task:', task);
+    this.snackBar.open('Edit task functionality coming soon!', 'Close', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
+    });
+  }
+
+  addComment(task: Task): void {
+    // For now, using simplified version - full dialog can be added later
+    this.snackBar.open('Add comment feature coming soon!', 'Close', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom'
+    });
+    
+    /* Full implementation would use Material Dialog:
+    const comment = prompt('Enter your comment:');
+    if (comment && comment.trim()) {
+      this.stakeholderService.addComment(task._id, comment.trim()).subscribe({
+        next: () => {
+          this.snackBar.open('✓ Comment added successfully!', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['success-snackbar']
+          });
+          if (this.selectedProject) {
+            this.loadTasks(this.selectedProject._id);
+          }
+        },
+        error: (error) => {
+          console.error('Error adding comment:', error);
+          this.snackBar.open('✗ Failed to add comment. Please try again.', 'Close', {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['error-snackbar']
+          });
+        }
+      });
+    }
+    */
+  }
+
+  deleteTask(task: Task): void {
+    // Show confirmation in snackbar with action button
+    const snackBarRef = this.snackBar.open(
+      `Delete "${task.title}"?`,
+      'DELETE',
+      {
+        duration: 5000,
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+        panelClass: ['warning-snackbar']
+      }
+    );
+
+    snackBarRef.onAction().subscribe(() => {
+      this.stakeholderService.deleteTask(task._id).subscribe({
+        next: () => {
+          this.snackBar.open('✓ Task deleted successfully!', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['success-snackbar']
+          });
+          // Remove task from local array
+          this.tasks = this.tasks.filter(t => t._id !== task._id);
+        },
+        error: (error) => {
+          console.error('Error deleting task:', error);
+          this.snackBar.open('✗ Failed to delete task. Please try again.', 'Close', {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['error-snackbar']
+          });
+        }
+      });
+    });
   }
 }
