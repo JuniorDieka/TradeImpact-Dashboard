@@ -6,7 +6,7 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-7.x-47A248?logo=mongodb)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)
 
-**Last Updated:** May 22, 2026
+**Last Updated:** June 5, 2026
 
 A **multi-stakeholder sustainability trade intelligence platform** for MSMEs and policymakers, inspired by ITC's T4SD (Trade for Sustainable Development) and GIVC (Green & Inclusive Value Chains) programmes.
 
@@ -21,6 +21,7 @@ A **multi-stakeholder sustainability trade intelligence platform** for MSMEs and
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
 - [API Documentation](#api-documentation)
+- [Video Demo](#video-demo)
 - [Screenshots](#screenshots)
 - [Deployment](#deployment)
 - [Contributing](#contributing)
@@ -44,34 +45,56 @@ This platform mirrors the work done by the **International Trade Centre (ITC)** 
 
 ## ✨ Features
 
-### 1. **Sustainability Standards Browser**
+### ✅ **Currently Implemented (v1.0)**
+
+#### 🔐 **Authentication & Role-Based Access Control**
+- JWT-based authentication with secure token management
+- 4 user roles: Admin, Policy Analyst, MSME User, Stakeholder
+- International security compliance (NIST 800-53, ISO 27001, SOC 2)
+- Role-based UI navigation and API endpoint protection
+
+#### 🏠 **Dashboard & Landing Page**
+- Personalized user dashboard with role-based metrics
+- User profile management
+- Modern Material Design interface
+
+#### 1. **Sustainability Standards Browser** ✅
 - Search and filter 150+ voluntary sustainability standards (VSS) by sector, country, and hotspot category
 - Compare standards side-by-side with detailed criteria breakdowns
+- Detailed standard information pages
 - Mirror functionality of ITC's **Standards Map**
 
-### 2. **National Trade Performance Monitor**
+#### 2. **National Trade Performance Monitor** ✅
 - Real-time trade competitiveness dashboards per country
-- Export/import trend analysis with interactive charts
-- Trade recovery indicators and sustainability scores
-- Sector-level breakdown and top trading partners
+- Export/import trend analysis with interactive Chart.js visualizations
+- Member state selection (Rwanda, Kenya, Ethiopia, Uganda, etc.)
+- Sector-level breakdown with quarterly data tracking
 
-### 3. **MSME Sustainability Self-Assessment**
+#### 3. **Stakeholder Collaboration Board** ✅
+- Multi-stakeholder project management (Ministries, BSOs, Private Sector)
+- Kanban-style task board with 5 status columns (Backlog, To Do, In Progress, Review, Done)
+- Task assignment with priority levels and due dates
+- Material Design notifications for all actions
+- Project and task filtering
+- Reflects UNECA-style client coordination workflows
+
+---
+
+### 🚧 **Coming Soon** (Backend APIs Ready)
+
+#### 4. **MSME Sustainability Self-Assessment** 🔜
 - Multi-step assessment form across 5 dimensions (environmental, social, economic, quality, ethics)
 - Automated gap analysis and sustainability scoring
 - **Downloadable roadmap** with prioritized recommendations and cost estimates
 - Inspired by T4SD diagnostic tools
+- *Status: Backend complete, frontend UI in development*
 
-### 4. **Green Value Chain Tracker**
+#### 5. **Green Value Chain Tracker** 🔜
 - Visualize end-to-end value chains from production to market
 - Identify sustainability risk hotspots at each stage
 - Compliance status tracking and mitigation action planning
 - Aligned with GIVC **Alliances for Action (A4A)** methodology
-
-### 5. **Stakeholder Collaboration Board**
-- Multi-stakeholder project management (Ministries, BSOs, Private Sector)
-- Task assignment, commenting, and progress tracking
-- Budget monitoring and deliverable management
-- Reflects UNECA-style client coordination workflows
+- *Status: Backend complete, frontend UI in development*
 
 ---
 
@@ -326,8 +349,14 @@ TradeImpact-Dashboard/
 ├── .gitignore                 # Excludes .env.atlas, node_modules, build outputs
 ├── .nvmrc                     # Node version 18.0.0
 ├── README.md                  # This file
-├── DEVELOPMENT.md             # Comprehensive development guide
-└── STRUCTURE.md               # Detailed folder structure documentation
+├── docs/
+│   ├── DEVELOPMENT.md         # Comprehensive development guide
+│   ├── STRUCTURE.md           # Detailed folder structure documentation
+│   ├── RBAC_IMPLEMENTATION.md # Security and access control documentation
+│   ├── GITHUB_RELEASE.md      # GitHub release template
+│   ├── screenshots/           # Application screenshots
+│   └── videos/                # Video demo hosting instructions
+└── package.json               # Root workspace configuration
 ```
 
 ---
@@ -363,16 +392,44 @@ Authorization: Bearer <JWT_TOKEN>
 
 ---
 
-## 📸 Screenshots
+## 🎬 Video Demo
 
-_[Screenshots will be added here after deployment]_
+Click the image below to watch a short walkthrough of the TradeImpact Dashboard:
 
-- Dashboard Overview
-- Standards Comparison
-- Trade Performance Charts
-- Assessment Results
-- Value Chain Visualization
-- Stakeholder Board
+[![TradeImpact Dashboard Demo](docs/screenshots/02-dashboard-overview.png)](https://github.com/JuniorDieka/TradeImpact-Dashboard/releases/tag/v1.0)
+
+This demo is designed for programme, policy, and non-technical audiences. It shows how TradeImpact Dashboard supports sustainable trade monitoring, standards comparison, MSME assessment, and stakeholder collaboration.
+
+> **Note:** The video demonstrates:
+> - 👤 **Multi-user role-based access** (Admin, Policy Analyst, MSME User, Stakeholder)
+> - 📊 **Trade Performance Monitor** with interactive charts
+> - ✅ **Sustainability Standards Browser** with comparison tools
+> - 🔄 **Stakeholder Collaboration Board** with Kanban task management
+> - 🔒 **Role-based navigation** - different users see different features
+> - 🎨 **Material Design notifications** for all user interactions
+
+### 📸 Screenshots
+
+<details>
+<summary>Click to view screenshots</summary>
+
+#### Login & Authentication
+![Login Page](docs/screenshots/01-login-page.png)
+
+#### Dashboard Overview
+![Dashboard](docs/screenshots/02-dashboard-overview.png)
+
+#### Trade Performance Analytics
+![Trade Performance](docs/screenshots/03-trade-performance.png)
+
+#### Sustainability Standards
+![Standards Browser](docs/screenshots/04-standards-list.png)
+![Standards Comparison](docs/screenshots/05-standards-compare.png)
+
+#### Stakeholder Collaboration Board
+![Stakeholder Board](docs/screenshots/06-stakeholder-board.png)
+
+</details>
 
 ---
 

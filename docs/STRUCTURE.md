@@ -9,8 +9,14 @@ TradeImpact-Dashboard/
 ├── .gitignore            # Excludes .env.atlas, node_modules, build outputs
 ├── .nvmrc                # Node version 18.0.0
 ├── README.md             # Main documentation
-├── DEVELOPMENT.md        # Comprehensive development guide
-└── STRUCTURE.md          # This file - detailed project structure
+├── docs/
+│   ├── DEVELOPMENT.md    # Comprehensive development guide
+│   ├── STRUCTURE.md      # This file - detailed project structure
+│   ├── RBAC_IMPLEMENTATION.md  # Security documentation
+│   ├── GITHUB_RELEASE.md       # GitHub release template
+│   ├── screenshots/      # Application screenshots
+│   └── videos/           # Video demo hosting instructions
+└── package.json          # Root workspace configuration
 ```
 
 ## Backend Structure (NestJS + MongoDB)

@@ -233,6 +233,7 @@ npm run build
 ## Support
 
 For issues or questions, check:
-- README.md - General information
-- STRUCTURE.md - Project structure details
+- [README.md](../README.md) - General information
+- [STRUCTURE.md](STRUCTURE.md) - Project structure details
+- [RBAC_IMPLEMENTATION.md](RBAC_IMPLEMENTATION.md) - Security and access control
 - Backend/Frontend documentation in respective folders

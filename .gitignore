@@ -39,3 +39,11 @@ coverage/
 
 # Misc
 *.orig
+
+# Large media files (use GitHub Releases or external hosting)
+*.mp4
+*.mov
+*.avi
+*.mkv
+docs/videos/*.mp4
+docs/videos/*.mov
