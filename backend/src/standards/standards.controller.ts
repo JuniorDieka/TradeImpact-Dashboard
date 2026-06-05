@@ -14,7 +14,7 @@ import { UserRole } from '../users/schemas/user.schema';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth('JWT-auth')
 export class StandardsController {
-  constructor(private readonly standardsService: StandardsService) {}
+  constructor(private readonly standardsService: StandardsService) { }
 
   @Post()
   @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST)
@@ -26,6 +26,7 @@ export class StandardsController {
   }
 
   @Get()
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER, UserRole.STAKEHOLDER)
   @ApiOperation({ summary: 'Get all standards with optional filtering' })
   @ApiResponse({ status: 200, description: 'Standards retrieved successfully' })
   @ApiQuery({ name: 'sector', required: false })
@@ -39,6 +40,7 @@ export class StandardsController {
   }
 
   @Get('compare')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER, UserRole.STAKEHOLDER)
   @ApiOperation({ summary: 'Compare multiple standards by IDs' })
   @ApiResponse({ status: 200, description: 'Standards comparison retrieved' })
   @ApiQuery({ name: 'ids', required: true, type: [String], description: 'Comma-separated standard IDs' })
@@ -48,6 +50,7 @@ export class StandardsController {
   }
 
   @Get(':id')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER, UserRole.STAKEHOLDER)
   @ApiOperation({ summary: 'Get a single standard by ID' })
   @ApiResponse({ status: 200, description: 'Standard retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Standard not found' })

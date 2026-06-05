@@ -12,9 +12,10 @@ import { UserRole } from '../users/schemas/user.schema';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth('JWT-auth')
 export class AssessmentsController {
-  constructor(private readonly assessmentsService: AssessmentsService) {}
+  constructor(private readonly assessmentsService: AssessmentsService) { }
 
   @Post()
+  @Roles(UserRole.ADMIN, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Create a new MSME sustainability assessment' })
   @ApiResponse({ status: 201, description: 'Assessment successfully created' })
   create(@Body() createAssessmentDto: CreateAssessmentDto) {
@@ -22,6 +23,7 @@ export class AssessmentsController {
   }
 
   @Get()
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Get all assessments, optionally filtered by user' })
   @ApiResponse({ status: 200, description: 'Assessments retrieved successfully' })
   @ApiQuery({ name: 'userId', required: false })
@@ -30,6 +32,7 @@ export class AssessmentsController {
   }
 
   @Get(':id')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Get a single assessment by ID' })
   @ApiResponse({ status: 200, description: 'Assessment retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Assessment not found' })
@@ -38,6 +41,7 @@ export class AssessmentsController {
   }
 
   @Get(':id/roadmap')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Get sustainability improvement roadmap for an assessment' })
   @ApiResponse({ status: 200, description: 'Roadmap retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Assessment not found' })
@@ -46,6 +50,7 @@ export class AssessmentsController {
   }
 
   @Patch(':id')
+  @Roles(UserRole.ADMIN, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Update an assessment' })
   @ApiResponse({ status: 200, description: 'Assessment updated successfully' })
   @ApiResponse({ status: 404, description: 'Assessment not found' })

@@ -13,7 +13,7 @@ import { UserRole } from '../users/schemas/user.schema';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth('JWT-auth')
 export class CountryTradeController {
-  constructor(private readonly countryTradeService: CountryTradeService) {}
+  constructor(private readonly countryTradeService: CountryTradeService) { }
 
   @Post()
   @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST)
@@ -25,6 +25,7 @@ export class CountryTradeController {
   }
 
   @Get()
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Get all trade data with optional filtering' })
   @ApiResponse({ status: 200, description: 'Trade data retrieved successfully' })
   @ApiQuery({ name: 'memberState', required: false })
@@ -37,6 +38,7 @@ export class CountryTradeController {
   }
 
   @Get('country/:memberState')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Get all trade data for a specific country' })
   @ApiResponse({ status: 200, description: 'Country trade data retrieved successfully' })
   findByCountry(@Param('memberState') memberState: string) {
@@ -44,6 +46,7 @@ export class CountryTradeController {
   }
 
   @Get('trends/:memberState')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Get trade trends for a country over recent years' })
   @ApiResponse({ status: 200, description: 'Trade trends retrieved successfully' })
   @ApiQuery({ name: 'years', required: false, description: 'Number of years to look back', type: Number })
@@ -55,6 +58,7 @@ export class CountryTradeController {
   }
 
   @Get(':id')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Get a single trade data entry by ID' })
   @ApiResponse({ status: 200, description: 'Trade data retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Trade data not found' })

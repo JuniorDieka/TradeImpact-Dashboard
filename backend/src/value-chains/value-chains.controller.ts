@@ -13,9 +13,10 @@ import { UserRole } from '../users/schemas/user.schema';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth('JWT-auth')
 export class ValueChainsController {
-  constructor(private readonly valueChainsService: ValueChainsService) {}
+  constructor(private readonly valueChainsService: ValueChainsService) { }
 
   @Post()
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Create a new value chain tracker' })
   @ApiResponse({ status: 201, description: 'Value chain successfully created' })
   create(@Body() createValueChainDto: CreateValueChainDto) {
@@ -23,6 +24,7 @@ export class ValueChainsController {
   }
 
   @Get()
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Get all value chains, optionally filtered by user' })
   @ApiResponse({ status: 200, description: 'Value chains retrieved successfully' })
   @ApiQuery({ name: 'userId', required: false })
@@ -31,6 +33,7 @@ export class ValueChainsController {
   }
 
   @Get(':id')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Get a single value chain by ID' })
   @ApiResponse({ status: 200, description: 'Value chain retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Value chain not found' })
@@ -39,6 +42,7 @@ export class ValueChainsController {
   }
 
   @Get(':id/hotspots')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Get detailed hotspot analysis for a value chain' })
   @ApiResponse({ status: 200, description: 'Hotspot analysis retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Value chain not found' })
@@ -47,6 +51,7 @@ export class ValueChainsController {
   }
 
   @Patch(':id')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.MSME_USER)
   @ApiOperation({ summary: 'Update a value chain' })
   @ApiResponse({ status: 200, description: 'Value chain updated successfully' })
   @ApiResponse({ status: 404, description: 'Value chain not found' })

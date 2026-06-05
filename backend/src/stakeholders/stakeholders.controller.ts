@@ -16,7 +16,7 @@ import { UserRole } from '../users/schemas/user.schema';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth('JWT-auth')
 export class StakeholdersController {
-  constructor(private readonly stakeholdersService: StakeholdersService) {}
+  constructor(private readonly stakeholdersService: StakeholdersService) { }
 
   @Post('projects')
   @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.STAKEHOLDER)
@@ -27,6 +27,7 @@ export class StakeholdersController {
   }
 
   @Get('projects')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.STAKEHOLDER)
   @ApiOperation({ summary: 'Get all projects, optionally filtered by member state' })
   @ApiResponse({ status: 200, description: 'Projects retrieved successfully' })
   @ApiQuery({ name: 'memberState', required: false })
@@ -35,6 +36,7 @@ export class StakeholdersController {
   }
 
   @Get('projects/:id')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.STAKEHOLDER)
   @ApiOperation({ summary: 'Get a single project by ID' })
   @ApiResponse({ status: 200, description: 'Project retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Project not found' })
@@ -43,6 +45,7 @@ export class StakeholdersController {
   }
 
   @Get('projects/:id/stats')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.STAKEHOLDER)
   @ApiOperation({ summary: 'Get project statistics and task summary' })
   @ApiResponse({ status: 200, description: 'Project stats retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Project not found' })
@@ -69,6 +72,7 @@ export class StakeholdersController {
   }
 
   @Post('tasks')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.STAKEHOLDER)
   @ApiOperation({ summary: 'Create a new task' })
   @ApiResponse({ status: 201, description: 'Task successfully created' })
   @ApiResponse({ status: 404, description: 'Project not found' })
@@ -77,6 +81,7 @@ export class StakeholdersController {
   }
 
   @Get('tasks')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.STAKEHOLDER)
   @ApiOperation({ summary: 'Get all tasks with optional filters' })
   @ApiResponse({ status: 200, description: 'Tasks retrieved successfully' })
   @ApiQuery({ name: 'projectId', required: false })
@@ -89,6 +94,7 @@ export class StakeholdersController {
   }
 
   @Get('tasks/:id')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.STAKEHOLDER)
   @ApiOperation({ summary: 'Get a single task by ID' })
   @ApiResponse({ status: 200, description: 'Task retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Task not found' })
@@ -97,6 +103,7 @@ export class StakeholdersController {
   }
 
   @Patch('tasks/:id')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.STAKEHOLDER)
   @ApiOperation({ summary: 'Update a task' })
   @ApiResponse({ status: 200, description: 'Task updated successfully' })
   @ApiResponse({ status: 404, description: 'Task not found' })
@@ -114,6 +121,7 @@ export class StakeholdersController {
   }
 
   @Post('tasks/:id/comments')
+  @Roles(UserRole.ADMIN, UserRole.POLICY_ANALYST, UserRole.STAKEHOLDER)
   @ApiOperation({ summary: 'Add a comment to a task' })
   @ApiResponse({ status: 200, description: 'Comment added successfully' })
   @ApiResponse({ status: 404, description: 'Task not found' })
