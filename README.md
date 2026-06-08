@@ -12,23 +12,6 @@ A **multi-stakeholder sustainability trade intelligence platform** for MSMEs and
 
 ---
 
-## 📋 Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [API Documentation](#api-documentation)
-- [Video Demo](#video-demo)
-- [Screenshots](#screenshots)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-- [License](#license)
-
----
-
 ## 🌍 Overview
 
 TradeImpact Dashboard empowers **Micro, Small, and Medium Enterprises (MSMEs)** and **policy analysts** in developing countries to:
@@ -40,6 +23,83 @@ TradeImpact Dashboard empowers **Micro, Small, and Medium Enterprises (MSMEs)** 
 - **Collaborate on multi-stakeholder projects** for sustainable trade transformation
 
 This platform mirrors the work done by the **International Trade Centre (ITC)** in their Trade for Sustainable Development (T4SD) and Green & Inclusive Value Chains (GIVC) programmes, supporting the Sustainable Development Goals (SDGs) and climate-resilient trade in Africa and beyond.
+
+---
+
+## 🎬 Visual Journey
+
+### Watch the Dashboard in Action
+
+Experience the full potential of TradeImpact Dashboard through our comprehensive demo video:
+
+[![TradeImpact Dashboard Demo](docs/screenshots/02-dashboard-overview.png)](https://github.com/JuniorDieka/TradeImpact-Dashboard/releases/tag/v1.0)
+
+> **🎥 Video Highlights** (1:00 min):
+> - 👤 Multi-role authentication (Admin, Policy Analyst, MSME User, Stakeholder)
+> - 📊 Interactive trade analytics with real-time charts
+> - ✅ Standards comparison across sectors and countries
+> - 🔄 Collaborative project management with Kanban boards
+> - 🔒 Dynamic role-based navigation and security
+> - 🎨 Elegant Material Design user experience
+
+---
+
+### 📸 A User's Journey Through TradeImpact
+
+<details open>
+<summary><b>Explore the Platform Step by Step</b></summary>
+
+#### 🔐 Step 1: Secure Access
+
+![Login Page](docs/screenshots/01-login-page.png)
+
+**Starting Point**: Users authenticate with their organizational credentials. The system recognizes their role (Admin, Policy Analyst, MSME User, or Stakeholder) and tailors the entire experience accordingly.
+
+---
+
+#### 🏠 Step 2: Personalized Dashboard
+
+![Dashboard Overview](docs/screenshots/02-dashboard-overview.png)
+
+**Command Center**: Upon login, users land on a personalized dashboard showing relevant metrics, quick actions, and role-specific insights. Admins see system-wide statistics, while MSME users focus on their sustainability journey.
+
+---
+
+#### 📊 Step 3: Trade Performance Intelligence
+
+![Trade Performance](docs/screenshots/03-trade-performance.png)
+
+**Data-Driven Insights**: Policy analysts and MSME users explore interactive charts showing export/import trends, sector breakdowns, and trade competitiveness indicators. Select member states, filter by quarters, and track recovery metrics with Chart.js visualizations.
+
+---
+
+#### ✅ Step 4: Sustainability Standards Discovery
+
+![Standards Browser](docs/screenshots/04-standards-list.png)
+
+**Standards Library**: Browse 150+ voluntary sustainability standards (VSS) filtered by sector, country, and hotspot categories. Each standard displays detailed certification requirements, inspired by ITC's Standards Map.
+
+---
+
+#### ⚖️ Step 5: Side-by-Side Comparison
+
+![Standards Comparison](docs/screenshots/05-standards-compare.png)
+
+**Decision Support**: Compare multiple standards simultaneously to identify the best fit for your business or policy needs. View criteria breakdowns, sector applicability, and country coverage in a clear comparison matrix.
+
+---
+
+#### 👥 Step 6: Collaborative Action
+
+![Stakeholder Board](docs/screenshots/06-stakeholder-board.png)
+
+**Multi-Stakeholder Coordination**: Government officials, business support organizations, and private sector stakeholders collaborate on sustainability projects. The Kanban board tracks tasks across 5 status columns (Backlog → To Do → In Progress → Review → Done) with priority levels, assignments, and real-time Material Design notifications.
+
+---
+
+**🚀 Ready to Experience It Yourself?** [Jump to Getting Started](#getting-started)
+
+</details>
 
 ---
 
@@ -389,47 +449,6 @@ All protected endpoints require:
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
-
----
-
-## 🎬 Video Demo
-
-Click the image below to watch a short walkthrough of the TradeImpact Dashboard:
-
-[![TradeImpact Dashboard Demo](docs/screenshots/02-dashboard-overview.png)](https://github.com/JuniorDieka/TradeImpact-Dashboard/releases/tag/v1.0)
-
-This demo is designed for programme, policy, and non-technical audiences. It shows how TradeImpact Dashboard supports sustainable trade monitoring, standards comparison, MSME assessment, and stakeholder collaboration.
-
-> **Note:** The video demonstrates:
-> - 👤 **Multi-user role-based access** (Admin, Policy Analyst, MSME User, Stakeholder)
-> - 📊 **Trade Performance Monitor** with interactive charts
-> - ✅ **Sustainability Standards Browser** with comparison tools
-> - 🔄 **Stakeholder Collaboration Board** with Kanban task management
-> - 🔒 **Role-based navigation** - different users see different features
-> - 🎨 **Material Design notifications** for all user interactions
-
-### 📸 Screenshots
-
-<details>
-<summary>Click to view screenshots</summary>
-
-#### Login & Authentication
-![Login Page](docs/screenshots/01-login-page.png)
-
-#### Dashboard Overview
-![Dashboard](docs/screenshots/02-dashboard-overview.png)
-
-#### Trade Performance Analytics
-![Trade Performance](docs/screenshots/03-trade-performance.png)
-
-#### Sustainability Standards
-![Standards Browser](docs/screenshots/04-standards-list.png)
-![Standards Comparison](docs/screenshots/05-standards-compare.png)
-
-#### Stakeholder Collaboration Board
-![Stakeholder Board](docs/screenshots/06-stakeholder-board.png)
-
-</details>
 
 ---
 
