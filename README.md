@@ -8,7 +8,10 @@
 
 **Last Updated:** June 5, 2026
 
-A **multi-stakeholder sustainability trade intelligence platform** for MSMEs and policymakers, inspired by ITC's T4SD (Trade for Sustainable Development) and GIVC (Green & Inclusive Value Chains) programmes.
+> **⚠️ EDUCATIONAL PROJECT DISCLAIMER**  
+> This is a **portfolio demonstration project** built for educational purposes and technical skill showcase. It is **not affiliated with, endorsed by, or representing** any international organization. All data, methodologies, and features are independently developed based on publicly available information about sustainable trade frameworks.
+
+A **multi-stakeholder sustainability trade intelligence platform** for MSMEs and policymakers, conceptually inspired by public sustainable development frameworks including T4SD (Trade for Sustainable Development) and GIVC (Green & Inclusive Value Chains) methodologies.
 
 ---
 
@@ -22,7 +25,7 @@ TradeImpact Dashboard empowers **Micro, Small, and Medium Enterprises (MSMEs)** 
 - **Track green value chains** with risk hotspot analysis
 - **Collaborate on multi-stakeholder projects** for sustainable trade transformation
 
-This platform mirrors the work done by the **International Trade Centre (ITC)** in their Trade for Sustainable Development (T4SD) and Green & Inclusive Value Chains (GIVC) programmes, supporting the Sustainable Development Goals (SDGs) and climate-resilient trade in Africa and beyond.
+This educational platform demonstrates technical capabilities in building trade intelligence tools that align with Sustainable Development Goals (SDGs) and support climate-resilient trade concepts in developing regions.
 
 ---
 
@@ -122,7 +125,7 @@ Experience the full potential of TradeImpact Dashboard through our comprehensive
 - Search and filter 150+ voluntary sustainability standards (VSS) by sector, country, and hotspot category
 - Compare standards side-by-side with detailed criteria breakdowns
 - Detailed standard information pages
-- Mirror functionality of ITC's **Standards Map**
+- Demonstrate standards comparison functionality similar to public sustainability databases
 
 #### 2. **National Trade Performance Monitor** ✅
 - Real-time trade competitiveness dashboards per country
@@ -136,7 +139,7 @@ Experience the full potential of TradeImpact Dashboard through our comprehensive
 - Task assignment with priority levels and due dates
 - Material Design notifications for all actions
 - Project and task filtering
-- Reflects UNECA-style client coordination workflows
+- Demonstrates multi-stakeholder coordination workflows common in development projects
 
 ---
 
@@ -146,14 +149,14 @@ Experience the full potential of TradeImpact Dashboard through our comprehensive
 - Multi-step assessment form across 5 dimensions (environmental, social, economic, quality, ethics)
 - Automated gap analysis and sustainability scoring
 - **Downloadable roadmap** with prioritized recommendations and cost estimates
-- Inspired by T4SD diagnostic tools
+- Inspired by public sustainability assessment frameworks
 - *Status: Backend complete, frontend UI in development*
 
 #### 5. **Green Value Chain Tracker** 🔜
 - Visualize end-to-end value chains from production to market
 - Identify sustainability risk hotspots at each stage
 - Compliance status tracking and mitigation action planning
-- Aligned with GIVC **Alliances for Action (A4A)** methodology
+- Aligned with multi-stakeholder alliance methodologies for sustainable development
 - *Status: Backend complete, frontend UI in development*
 
 ---
@@ -499,14 +502,23 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-##  Acknowledgments
+## 📖 Conceptual Inspiration
 
-- **ITC T4SD Programme** - Inspiration for sustainability standards and MSME tools
-- **ITC GIVC** - Methodology for green value chain tracking
-- **UNECA** - Trade competitiveness and recovery metrics frameworks
-- **Standards Map** - Reference for VSS database structure
-- **Alliances for Action (A4A)** - Multi-stakeholder collaboration approach
+This project draws conceptual inspiration from publicly available information about:
+- Sustainable trade development frameworks (T4SD concepts)
+- Green and inclusive value chain methodologies (GIVC concepts)  
+- Trade competitiveness metrics used in development economics
+- Public sustainability standards databases
+- Multi-stakeholder collaboration approaches in development work
+
+**Note:** This is an independent educational project. No proprietary data, confidential information, or organizational intellectual property has been used.
 
 ---
 
-**Built with ❤️ for sustainable and inclusive trade transformation in developing countries**
+**Built with ❤️ as a technical portfolio demonstration for sustainable trade intelligence platforms**
+
+---
+
+## ⚖️ Legal Disclaimer
+
+This software is provided "as is" for **educational and portfolio demonstration purposes only**. It is not intended for production use in real trade policy or business decisions. The creator makes no claims of affiliation with any international organization. All frameworks, methodologies, and data structures are independently developed based on publicly available information about sustainable development practices.
